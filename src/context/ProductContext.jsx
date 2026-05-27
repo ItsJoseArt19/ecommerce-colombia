@@ -1,18 +1,17 @@
 import { createContext, useReducer, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../services/firebaseConfig';
+import { DUMMY_PRODUCTS } from '../data/dummyData';
 
 export const ProductContext = createContext();
 
 const initialState = {
-  products: [],
-  filteredProducts: [],
+  products: DUMMY_PRODUCTS,
+  filteredProducts: DUMMY_PRODUCTS,
   loading: false,
   error: null,
   filters: {
     category: null,
     minPrice: 0,
-    maxPrice: 10000,
+    maxPrice: 500000,
     rating: 0,
     search: '',
   },
@@ -58,25 +57,6 @@ function productReducer(state, action) {
 
 export function ProductProvider({ children }) {
   const [state, dispatch] = useReducer(productReducer, initialState);
-
-  // Cargar productos de Firebase
-  useEffect(() => {
-    const loadProducts = async () => {
-      dispatch({ type: 'SET_LOADING', payload: true });
-      try {
-        const querySnapshot = await getDocs(collection(db, 'products'));
-        const products = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        dispatch({ type: 'SET_PRODUCTS', payload: products });
-      } catch (error) {
-        dispatch({ type: 'SET_ERROR', payload: error.message });
-      }
-    };
-
-    loadProducts();
-  }, []);
 
   // Aplicar filtros cuando cambien
   useEffect(() => {

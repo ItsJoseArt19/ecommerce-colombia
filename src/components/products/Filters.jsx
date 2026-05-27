@@ -5,12 +5,15 @@ export default function Filters({ filters, setFilters }) {
   const updateFilters = (nextFilters) => setFilters({ ...filters, ...nextFilters });
 
   const handleReset = () => {
-    setFilters({
-      category: null,
-      minPrice: 0,
-      maxPrice: 500000,
-      rating: 0,
-      search: '',
+    dispatch({
+      type: 'SET_FILTER',
+      payload: {
+        category: null,
+        minPrice: 0,
+        maxPrice: 500000,
+        rating: 0,
+        search: '',
+      },
     });
   };
 
