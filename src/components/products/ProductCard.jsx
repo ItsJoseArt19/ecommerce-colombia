@@ -1,11 +1,13 @@
 import { useCart } from '../../hooks/useCart';
 import styles from './ProductCard.module.scss';
 
-export default function ProductCard({ product, onViewDetails }) {
+const formatCurrency = (value) =>
+  value.toLocaleString('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+
+export default function ProductCard({ product, onAdded }) {
   const { dispatch } = useCart();
 
-  const handleAddToCart = (e) => {
-    e.stopPropagation();
+  const handleAddToCart = () => {
     dispatch({
       type: 'ADD_ITEM',
       payload: {
@@ -14,50 +16,49 @@ export default function ProductCard({ product, onViewDetails }) {
         price: product.price,
         image: product.image,
         quantity: 1,
+        vendor: product.vendor,
       },
     });
-    alert('Producto agregado al carrito');
-  };
-
-  const renderRating = (rating) => {
-    const stars = Math.round(rating);
-    return '⭐'.repeat(stars);
+    onAdded(product.name);
   };
 
   return (
-    <div className={styles.card} onClick={() => onViewDetails(product.id)}>
+    <article className={styles.card}>
       <div className={styles.imageContainer}>
         <img src={product.image} alt={product.name} className={styles.image} />
-        {!product.inStock && <div className={styles.outOfStock}>Agotado</div>}
+        <span className={styles.badge}>{product.badge}</span>
+        {!product.inStock && <span className={styles.outOfStock}>Agotado</span>}
       </div>
 
       <div className={styles.content}>
-        <div className={styles.category}>{product.category}</div>
-        <h3 className={styles.name}>{product.name}</h3>
-        <p className={styles.description}>{product.description}</p>
+        <div className={styles.meta}>
+          <span>{product.category}</span>
+          <small>{product.location}</small>
+        </div>
+        <h3>{product.name}</h3>
+        <p>{product.description}</p>
 
         <div className={styles.rating}>
-          <span className={styles.stars}>{renderRating(product.rating)}</span>
-          <span className={styles.count}>({product.reviews})</span>
+          <strong>{product.rating.toFixed(1)}</strong>
+          <span>{product.reviews} reseñas</span>
         </div>
 
         <div className={styles.vendor}>
-          <small>Por: {product.vendor}</small>
+          <span>{product.vendor}</span>
+          <small>{product.delivery}</small>
         </div>
 
-        <div className={styles.footer}>
-          <span className={styles.price}>
-            ${product.price.toLocaleString('es-CO')}
-          </span>
-          <button
-            className={styles.addBtn}
-            onClick={handleAddToCart}
-            disabled={!product.inStock}
-          >
-            {product.inStock ? 'Agregar' : 'No disponible'}
+        <div className={styles.priceRow}>
+          <div>
+            <strong>{formatCurrency(product.price)}</strong>
+            {product.previousPrice > 0 && <span>{formatCurrency(product.previousPrice)}</span>}
+          </div>
+          <button onClick={handleAddToCart} disabled={!product.inStock} type="button">
+            Agregar
           </button>
         </div>
+        <span className={styles.chatLink}>Chat disponible despues del pago</span>
       </div>
-    </div>
+    </article>
   );
 }

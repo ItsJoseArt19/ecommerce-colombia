@@ -8,100 +8,77 @@ export default function Header() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const { itemCount } = useCart();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
   const navigate = useNavigate();
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (searchValue.trim()) {
-      console.log('Buscar:', searchValue);
-      // Aquí iría la lógica de búsqueda
+  const handleSearch = (event) => {
+    event.preventDefault();
+    const query = searchValue.trim();
+    if (query) {
+      navigate(`/#catalogo?search=${encodeURIComponent(query)}`);
     }
   };
 
   return (
     <header className={styles.header}>
-      {/* Primera fila: Logo, ubicación y opciones */}
-      <div className={styles.topBar}>
-        <div className={styles.topContainer}>
-          {/* Logo y Ubicación */}
-          <Link to="/" className={styles.logo}>
-            <h1>🛍️ MercadoLocal</h1>
-          </Link>
-
-          <div className={styles.topOptions}>
-            <div className={styles.option}>
-              <span className={styles.icon}>📍</span>
-              <div>
-                <small>Envíos a</small>
-                <strong>Tu ubicación</strong>
-              </div>
-            </div>
-            <div className={`${styles.option} ${styles.optionShipping}`}>
-              <span className={styles.icon}>🚚</span>
-              <strong>ENVÍO GRATIS</strong>
-            </div>
-          </div>
-
-          {/* Auth rápido */}
-          {!isAuthenticated && (
-            <div className={styles.authQuick}>
-              <Link to="/login">Ingresa</Link>
-              <Link to="/registro" className={styles.registerBtn}>
-                Regístrate
-              </Link>
-            </div>
-          )}
-        </div>
+      <div className={styles.announcement}>
+        Envio gratis desde $120.000 · Pagos seguros · Productores colombianos
       </div>
 
-      {/* Segunda fila: Búsqueda */}
-      <div className={styles.searchBar}>
+      <div className={styles.mainBar}>
+        <Link to="/" className={styles.logo}>
+          <span>ML</span>
+          <strong>MercadoLocal</strong>
+        </Link>
+
         <form onSubmit={handleSearch} className={styles.searchForm}>
           <input
-            type="text"
-            placeholder="Buscar productos, marcas y más..."
+            type="search"
+            placeholder="Buscar productos, marcas o vendedores"
             value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            className={styles.searchInput}
+            onChange={(event) => setSearchValue(event.target.value)}
           />
-          <button type="submit" className={styles.searchBtn}>
-            🔍
-          </button>
+          <button type="submit">Buscar</button>
         </form>
-      </div>
 
-      {/* Tercera fila: Navegación y carrito */}
-      <div className={styles.bottomBar}>
-        <nav className={`${styles.nav} ${showMobileMenu ? styles.navActive : ''}`}>
-          <Link to="/">Categorías</Link>
-          <Link to="/">Ofertas</Link>
-          <Link to="/">Marcas</Link>
-          <Link to="/">Vendedores</Link>
-          <Link to="/">Ayuda</Link>
-        </nav>
-
-        {/* Acciones derecha */}
         <div className={styles.actions}>
-          {isAuthenticated && (
-            <span className={styles.userName}>
-              Hola, {user?.displayName || 'Usuario'}
-            </span>
+          {isAuthenticated ? (
+            <>
+              <Link className={styles.account} to="/mi-cuenta">
+                Hola, {user?.displayName || 'Usuario'}
+              </Link>
+              <button className={styles.ghostBtn} onClick={logout} type="button">
+                Salir
+              </button>
+            </>
+          ) : (
+            <>
+              <Link className={styles.account} to="/login">Ingresar</Link>
+              <Link className={styles.primaryBtn} to="/registro">Registro</Link>
+            </>
           )}
-
-          <Link to="/carrito" className={styles.cartIcon}>
-            🛒
-            {itemCount > 0 && <span className={styles.badge}>{itemCount}</span>}
+          <Link to="/carrito" className={styles.cart}>
+            Carrito
+            {itemCount > 0 && <span>{itemCount}</span>}
           </Link>
-
           <button
-            className={styles.hamburger}
-            onClick={() => setShowMobileMenu(!showMobileMenu)}
+            aria-label="Abrir menu"
+            className={styles.menuButton}
+            onClick={() => setShowMobileMenu((current) => !current)}
+            type="button"
           >
-            ☰
+            Menu
           </button>
         </div>
       </div>
+
+      <nav className={`${styles.nav} ${showMobileMenu ? styles.navOpen : ''}`}>
+        <a href="/#catalogo">Catalogo</a>
+        <a href="/#categorias">Categorias</a>
+        <Link to="/entregas">Seguimiento</Link>
+        <Link to="/chat">Chat</Link>
+        <Link to="/checkout">Checkout</Link>
+      </nav>
     </header>
   );
 }

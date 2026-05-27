@@ -1,270 +1,119 @@
-.carousel {
-  position: relative;
-  width: 100%;
-  height: 350px;
-  overflow: hidden;
-  background: #f0fdf4;
-  border-bottom: 4px solid;
-  border-image: linear-gradient(90deg, #FFD700 0%, #003087 50%, #CE1126 100%) 1;
+.hero {
+  align-items: stretch;
+  background:
+    linear-gradient(90deg, rgba(255, 215, 0, 0.18), transparent 24%),
+    linear-gradient(135deg, #063f2d, #0f6b45 58%, #12345f);
+  color: #fff;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  min-height: 420px;
+  padding: 3rem 2rem;
+  text-align: left;
 }
 
-.slidesContainer {
-  position: relative;
-  width: 100%;
-  height: 100%;
+.copy {
+  align-self: center;
+  max-width: 760px;
+
+  span {
+    color: #fde68a;
+    font-size: 0.82rem;
+    font-weight: 850;
+    letter-spacing: 0;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    color: #fff;
+    font-size: clamp(2.2rem, 5vw, 4.6rem);
+    font-weight: 900;
+    letter-spacing: 0;
+    line-height: 0.98;
+    margin: 0.75rem 0 1rem;
+    max-width: 820px;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    max-width: 650px;
+  }
 }
 
-.slide {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 0.8s ease-in-out;
+.actions {
   display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &.active {
-    opacity: 1;
-    z-index: 10;
-  }
-}
-
-.overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 5;
-}
-
-.content {
-  text-align: center;
-  color: white;
-  max-width: 600px;
-  padding: 2rem;
-  z-index: 15;
-  position: relative;
-}
-
-.subtitle {
-  font-size: 0.95rem;
-  font-weight: 500;
-  margin: 0 0 0.5rem 0;
-  opacity: 0.95;
-  letter-spacing: 0.5px;
-}
-
-.title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin: 0 0 1rem 0;
-  line-height: 1.2;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.highlight {
-  background: rgba(255, 215, 0, 0.9);
-  color: #000;
-  display: inline-block;
-  padding: 0.5rem 1.5rem;
-  border-radius: 4px;
-  font-weight: 700;
-  font-size: 0.95rem;
-  margin: 0 0 1.5rem 0;
-  letter-spacing: 0.5px;
-}
-
-.ctaBtn {
-  background: white;
-  color: #22c55e;
-  border: none;
-  padding: 0.75rem 2rem;
-  border-radius: 4px;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-    background: rgba(255, 255, 255, 0.95);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-}
-
-/* Botones de navegación */
-.navBtn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.8);
-  border: none;
-  color: #22c55e;
-  font-size: 2rem;
-  font-weight: bold;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  z-index: 20;
-
-  &:hover {
-    background: white;
-    color: #16a34a;
-  }
-
-  &:active {
-    transform: translateY(-50%) scale(0.95);
-  }
-}
-
-.prevBtn {
-  left: 1rem;
-}
-
-.nextBtn {
-  right: 1rem;
-}
-
-/* Indicadores de puntos */
-.indicators {
-  position: absolute;
-  bottom: 1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
+  flex-wrap: wrap;
   gap: 0.75rem;
-  z-index: 20;
-}
+  margin-top: 1.5rem;
 
-.dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.7);
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.5);
+  a {
+    align-items: center;
+    border-radius: 6px;
+    display: inline-flex;
+    font-weight: 850;
+    min-height: 44px;
+    padding: 0 1rem;
+    text-decoration: none;
   }
 
-  &.active {
-    background: white;
-    border-color: white;
-    transform: scale(1.3);
-  }
-}
-
-/* Contador de slides */
-.slideCounter {
-  display: none;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .carousel {
-    height: 250px;
+  a:first-child {
+    background: #fff;
+    color: #0f6b45;
   }
 
-  .content {
-    padding: 1.5rem;
-  }
-
-  .title {
-    font-size: 1.8rem;
-  }
-
-  .subtitle {
-    font-size: 0.85rem;
-  }
-
-  .highlight {
-    font-size: 0.85rem;
-    padding: 0.4rem 1rem;
-  }
-
-  .ctaBtn {
-    padding: 0.6rem 1.5rem;
-    font-size: 0.9rem;
-  }
-
-  .navBtn {
-    width: 40px;
-    height: 40px;
-    font-size: 1.5rem;
-
-    &.prevBtn {
-      left: 0.5rem;
-    }
-
-    &.nextBtn {
-      right: 0.5rem;
-    }
-  }
-
-  .dot {
-    width: 10px;
-    height: 10px;
-  }
-
-  .slideCounter {
-    font-size: 0.75rem;
-    padding: 0.4rem 0.8rem;
-    bottom: 1rem;
-    right: 1rem;
+  a:last-child {
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    color: #fff;
   }
 }
 
-@media (max-width: 480px) {
-  .carousel {
-    height: 200px;
+.featured {
+  align-self: end;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  overflow: hidden;
+
+  img {
+    aspect-ratio: 4 / 3;
+    display: block;
+    object-fit: cover;
+    width: 100%;
   }
 
-  .content {
+  div {
     padding: 1rem;
   }
 
-  .title {
-    font-size: 1.4rem;
-  }
-
-  .subtitle {
+  span {
+    color: #fde68a;
     font-size: 0.75rem;
+    font-weight: 850;
+    text-transform: uppercase;
   }
 
-  .highlight {
-    font-size: 0.75rem;
-    padding: 0.3rem 0.8rem;
-    margin: 0 0 1rem 0;
-  }
-
-  .ctaBtn {
-    padding: 0.5rem 1.2rem;
-    font-size: 0.8rem;
-  }
-
-  .navBtn {
-    width: 35px;
-    height: 35px;
+  h2 {
+    color: #fff;
     font-size: 1.2rem;
+    font-weight: 850;
+    letter-spacing: 0;
+    margin: 0.3rem 0;
   }
 
-  .indicators {
-    gap: 0.5rem;
-    bottom: 1rem;
+  p {
+    color: rgba(255, 255, 255, 0.78);
+  }
+}
+
+@media (max-width: 860px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 2rem 1rem;
+  }
+
+  .featured {
+    max-width: 420px;
   }
 }

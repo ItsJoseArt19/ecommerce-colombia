@@ -1,10 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProductProvider } from './context/ProductContext';
 import { CartProvider } from './context/CartContext';
 import { ChatProvider } from './context/ChatContext';
 import { AdminProvider } from './context/AdminContext';
-import HomePage from './pages/HomePage';
+import AppRoutes from './routes/AppRoutes';
 import './App.css';
 
 export default function App() {
@@ -15,9 +15,7 @@ export default function App() {
           <CartProvider>
             <ChatProvider>
               <AdminProvider>
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                </Routes>
+                <AppRoutes />
               </AdminProvider>
             </ChatProvider>
           </CartProvider>

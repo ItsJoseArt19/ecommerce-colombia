@@ -1,98 +1,83 @@
 .filters {
-  h3,
-  h4 {
-    margin: 0 0 1rem 0;
-    color: #333;
-  }
-
-  h3 {
-    font-size: 1.2rem;
-  }
-
-  h4 {
-    font-size: 0.95rem;
-  }
+  display: grid;
+  gap: 1.2rem;
 }
 
 .header {
+  align-items: center;
+  border-bottom: 1px solid #e5e7eb;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid;
-  border-image: linear-gradient(90deg, #FFD700, #003087, #CE1126) 1;
+  padding-bottom: 0.9rem;
+
+  h3 {
+    color: #111827;
+    font-size: 1.1rem;
+    font-weight: 850;
+    letter-spacing: 0;
+    margin: 0;
+  }
 }
 
 .resetBtn {
-  background: none;
-  border: none;
-  color: #22c55e;
+  background: transparent;
+  border: 0;
+  color: #16a34a;
   cursor: pointer;
-  font-weight: 600;
+  font: inherit;
   font-size: 0.85rem;
-  transition: opacity 0.3s;
-
-  &:hover {
-    opacity: 0.8;
-  }
+  font-weight: 850;
 }
 
-.filterGroup {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid #eee;
-
-  &:last-child {
-    border-bottom: none;
-  }
-}
-
-.input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.search {
+  color: #1f2937;
+  display: grid;
   font-size: 0.9rem;
-  font-family: inherit;
+  font-weight: 850;
+  gap: 0.45rem;
 
-  &:focus {
-    outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  input {
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    color: #111827;
+    font: inherit;
+    padding: 0.7rem 0.8rem;
+    width: 100%;
   }
 }
 
-.checkboxLabel {
+.group {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  cursor: pointer;
-  margin-bottom: 0.75rem;
-  font-size: 0.9rem;
-  color: #555;
-  transition: color 0.3s;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 
-  &:hover {
-    color: #333;
-  }
-
-  input[type='checkbox'] {
-    cursor: pointer;
-    width: 16px;
-    height: 16px;
-    accent-color: #667eea;
+  h4 {
+    color: #111827;
+    flex: 0 0 100%;
+    font-size: 0.9rem;
+    font-weight: 850;
+    margin: 0 0 0.15rem;
   }
 }
 
-@media (max-width: 768px) {
-  .filters {
-    h3 {
-      font-size: 1rem;
-    }
+.chip,
+.activeChip {
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 750;
+  padding: 0.45rem 0.7rem;
+}
 
-    h4 {
-      font-size: 0.9rem;
-    }
-  }
+.chip {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+.activeChip {
+  background: #16a34a;
+  border: 1px solid #16a34a;
+  color: #fff;
 }

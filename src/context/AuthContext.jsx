@@ -1,6 +1,7 @@
 import { createContext, useReducer, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../services/firebaseConfig';
+import { getUserRole, loginUser, logoutUser, registerUser } from '../services/authService';
 
 export const AuthContext = createContext();
 
@@ -20,6 +21,7 @@ function authReducer(state, action) {
         user: action.payload,
         isAuthenticated: !!action.payload,
         loading: false,
+        error: null,
       };
     case 'SET_ROLE':
       return {
@@ -38,7 +40,10 @@ function authReducer(state, action) {
         loading: false,
       };
     case 'LOGOUT':
-      return initialState;
+      return {
+        ...initialState,
+        loading: false,
+      };
     default:
       return state;
   }
@@ -48,20 +53,68 @@ export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    let mounted = true;
+
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!mounted) return;
+
       if (user) {
         dispatch({ type: 'SET_USER', payload: user });
-        // TODO: Obtener rol del usuario desde Firestore
+        try {
+          const role = await getUserRole(user.uid);
+          if (mounted) {
+            dispatch({ type: 'SET_ROLE', payload: role });
+          }
+        } catch (error) {
+          if (mounted) {
+            dispatch({ type: 'SET_ERROR', payload: error.message });
+          }
+        }
       } else {
         dispatch({ type: 'SET_USER', payload: null });
+        dispatch({ type: 'SET_ROLE', payload: null });
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
   }, []);
 
+  const login = async (email, password) => {
+    dispatch({ type: 'SET_LOADING', payload: true });
+    try {
+      return await loginUser(email, password);
+    } catch (error) {
+      dispatch({ type: 'SET_ERROR', payload: error.message });
+      throw error;
+    }
+  };
+
+  const register = async (email, password, displayName) => {
+    dispatch({ type: 'SET_LOADING', payload: true });
+    try {
+      return await registerUser(email, password, displayName);
+    } catch (error) {
+      dispatch({ type: 'SET_ERROR', payload: error.message });
+      throw error;
+    }
+  };
+
+  const logout = async () => {
+    dispatch({ type: 'SET_LOADING', payload: true });
+    try {
+      await logoutUser();
+      dispatch({ type: 'LOGOUT' });
+    } catch (error) {
+      dispatch({ type: 'SET_ERROR', payload: error.message });
+      throw error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ ...state, dispatch }}>
+    <AuthContext.Provider value={{ ...state, dispatch, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );

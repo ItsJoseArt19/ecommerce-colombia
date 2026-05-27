@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import ProductCard from './ProductCard';
 import Filters from './Filters';
 import styles from './ProductList.module.scss';
 import { DUMMY_PRODUCTS } from '../../data/dummyData';
+import { buildProductRanking } from '../../helpers/commerceStructures';
 
 export default function ProductList() {
-  const [products] = useState(DUMMY_PRODUCTS);
   const [filters, setFilters] = useState({
     category: null,
     minPrice: 0,
@@ -14,76 +14,81 @@ export default function ProductList() {
     search: '',
   });
   const [sortBy, setSortBy] = useState('popular');
+  const [addedProduct, setAddedProduct] = useState('');
 
-  // Aplicar filtros
-  const filteredProducts = products.filter(product => {
-    if (filters.category && product.category !== filters.category) return false;
-    if (product.price < filters.minPrice || product.price > filters.maxPrice) return false;
-    if (product.rating < filters.rating) return false;
-    if (
-      filters.search &&
-      !product.name.toLowerCase().includes(filters.search.toLowerCase())
-    ) {
-      return false;
-    }
-    return true;
-  });
+  const sortedProducts = useMemo(() => {
+    const filtered = DUMMY_PRODUCTS.filter((product) => {
+      if (filters.category && product.category !== filters.category) return false;
+      if (product.price < filters.minPrice || product.price > filters.maxPrice) return false;
+      if (product.rating < filters.rating) return false;
+      if (
+        filters.search &&
+        !`${product.name} ${product.vendor} ${product.category}`
+          .toLowerCase()
+          .includes(filters.search.toLowerCase())
+      ) {
+        return false;
+      }
+      return true;
+    });
 
-  // Aplicar ordenamiento
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortBy) {
       case 'price-asc':
-        return a.price - b.price;
+        return [...filtered].sort((a, b) => a.price - b.price);
       case 'price-desc':
-        return b.price - a.price;
+        return [...filtered].sort((a, b) => b.price - a.price);
       case 'rating':
-        return b.rating - a.rating;
+        return buildProductRanking(filtered);
       case 'newest':
-        return b.id - a.id;
+        return [...filtered].sort((a, b) => b.id - a.id);
       default:
-        return 0;
+        return filtered;
     }
-  });
+  }, [filters, sortBy]);
 
-  const handleViewDetails = (productId) => {
-    console.log('Ver detalles del producto:', productId);
-    // Aquí irá la navegación a detalles del producto
+  const handleAdded = (name) => {
+    setAddedProduct(name);
+    window.setTimeout(() => setAddedProduct(''), 2200);
   };
 
   return (
     <div className={styles.container}>
-      <div className={styles.sidebar}>
+      <aside className={styles.sidebar}>
         <Filters filters={filters} setFilters={setFilters} />
-      </div>
+      </aside>
 
       <div className={styles.main}>
         <div className={styles.header}>
-          <h2>Productos ({sortedProducts.length})</h2>
+          <div>
+            <span>Catalogo</span>
+            <h2>{sortedProducts.length} productos disponibles</h2>
+          </div>
           <select
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
+            onChange={(event) => setSortBy(event.target.value)}
             className={styles.sortSelect}
           >
-            <option value="popular">Más Popular</option>
-            <option value="newest">Más Nuevo</option>
-            <option value="price-asc">Menor Precio</option>
-            <option value="price-desc">Mayor Precio</option>
-            <option value="rating">Mayor Calificación</option>
+            <option value="popular">Relevancia</option>
+            <option value="newest">Mas nuevo</option>
+            <option value="price-asc">Menor precio</option>
+            <option value="price-desc">Mayor precio</option>
+            <option value="rating">Mejor calificacion</option>
           </select>
         </div>
 
+        {addedProduct && (
+          <div className={styles.toast}>{addedProduct} agregado al carrito.</div>
+        )}
+
         {sortedProducts.length === 0 ? (
           <div className={styles.noResults}>
-            <p>No se encontraron productos con los filtros seleccionados</p>
+            <h3>No encontramos productos</h3>
+            <p>Ajusta los filtros o limpia la busqueda para ver mas resultados.</p>
           </div>
         ) : (
           <div className={styles.grid}>
-            {sortedProducts.map(product => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onViewDetails={handleViewDetails}
-              />
+            {sortedProducts.map((product) => (
+              <ProductCard key={product.id} product={product} onAdded={handleAdded} />
             ))}
           </div>
         )}

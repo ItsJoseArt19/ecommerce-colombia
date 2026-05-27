@@ -1,6 +1,6 @@
-import { collection, addDoc, query, where, getDocs, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { db, realtimeDB } from './firebaseConfig';
-import { ref, push, onValue } from 'firebase/database';
+import { ref, push, onValue, set } from 'firebase/database';
 import Stack from '../helpers/Stack';
 
 // Pila para historial de mensajes
@@ -37,7 +37,7 @@ export const sendMessage = async (conversationId, senderId, message) => {
     // Guardar en Realtime Database (para tiempo real)
     const messagesRef = ref(realtimeDB, `messages/${conversationId}`);
     const newMessageRef = push(messagesRef);
-    await newMessageRef.set(newMessage);
+    await set(newMessageRef, newMessage);
 
     return newMessage;
   } catch (error) {

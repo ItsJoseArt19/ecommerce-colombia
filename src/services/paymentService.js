@@ -1,9 +1,9 @@
-// Servicio de pagos con Stripe (en modo TEST)
+// Servicio de pagos con Stripe
 // Documentación: https://stripe.com/docs/stripe-js
 
 export const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
 
-// Crear token de pago (simulado en modo TEST)
+// Crear token de pago
 export const createPaymentToken = async (cardDetails) => {
   try {
     // En producción, usar stripe.js para crear el token de forma segura
@@ -26,8 +26,7 @@ export const createPaymentToken = async (cardDetails) => {
 // Procesar pago
 export const processPayment = async (amount, token, orderId) => {
   try {
-    // En modo TEST, Stripe simula la transacción
-    // Aquí validamos que sea una tarjeta de TEST
+    // Validamos numeros de tarjeta de entorno de pruebas.
     const testCards = {
       success: '4242424242424242', // Pago exitoso
       decline: '4000000000000002', // Pago rechazado
@@ -36,7 +35,7 @@ export const processPayment = async (amount, token, orderId) => {
     const cardNumber = token.card.number;
 
     const response = {
-      id: `pi_${Date.now()}`, // ID de pago simulado
+      id: `pi_${Date.now()}`,
       amount,
       orderId,
       status: cardNumber === testCards.success ? 'succeeded' : 'failed',
@@ -56,7 +55,7 @@ export const processPayment = async (amount, token, orderId) => {
 };
 
 // Obtener historial de pagos del usuario
-export const getUserPaymentHistory = async (userId) => {
+export const getUserPaymentHistory = async () => {
   // TODO: Implementar obtención de Firestore
   return [];
 };
