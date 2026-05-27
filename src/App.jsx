@@ -5,6 +5,8 @@ import { CartProvider } from './context/CartContext';
 import { ChatProvider } from './context/ChatContext';
 import { AdminProvider } from './context/AdminContext';
 import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import './App.css';
 
 export default function App() {
@@ -17,6 +19,8 @@ export default function App() {
               <AdminProvider>
                 <Routes>
                   <Route path="/" element={<HomePage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/registro" element={<RegisterPage />} />
                 </Routes>
               </AdminProvider>
             </ChatProvider>

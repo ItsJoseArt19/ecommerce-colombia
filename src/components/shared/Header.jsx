@@ -1,21 +1,54 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../hooks/useCart';
 import { useAuth } from '../../hooks/useAuth';
+import { useProducts } from '../../hooks/useProducts';
+import { logoutUser } from '../../services/authService';
 import styles from './Header.module.scss';
 
 export default function Header() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const { itemCount } = useCart();
-  const { isAuthenticated, user } = useAuth();
+  const userMenuRef = useRef(null);
   const navigate = useNavigate();
+  const { itemCount } = useCart();
+  const { isAuthenticated, user, dispatch } = useAuth();
+  const { filters, dispatch: dispatchProducts } = useProducts();
+
+  // Cerrar menú cuando se hace click fuera
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setShowUserMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchValue.trim()) {
-      console.log('Buscar:', searchValue);
-      // Aquí iría la lógica de búsqueda
+      dispatchProducts({
+        type: 'SET_FILTER',
+        payload: { search: searchValue }
+      });
+      const productList = document.getElementById('product-list');
+      if (productList) {
+        productList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      dispatch({ type: 'SET_USER', payload: null });
+      setShowUserMenu(false);
+      navigate('/');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
     }
   };
 
@@ -24,11 +57,12 @@ export default function Header() {
       {/* Primera fila: Logo, ubicación y opciones */}
       <div className={styles.topBar}>
         <div className={styles.topContainer}>
-          {/* Logo y Ubicación */}
+          {/* Logo */}
           <Link to="/" className={styles.logo}>
             <h1>🛍️ MercadoLocal</h1>
           </Link>
 
+          {/* Opciones a la derecha */}
           <div className={styles.topOptions}>
             <div className={styles.option}>
               <span className={styles.icon}>📍</span>
@@ -42,16 +76,6 @@ export default function Header() {
               <strong>ENVÍO GRATIS</strong>
             </div>
           </div>
-
-          {/* Auth rápido */}
-          {!isAuthenticated && (
-            <div className={styles.authQuick}>
-              <Link to="/login">Ingresa</Link>
-              <Link to="/registro" className={styles.registerBtn}>
-                Regístrate
-              </Link>
-            </div>
-          )}
         </div>
       </div>
 
@@ -83,16 +107,55 @@ export default function Header() {
 
         {/* Acciones derecha */}
         <div className={styles.actions}>
-          {isAuthenticated && (
-            <span className={styles.userName}>
-              Hola, {user?.displayName || 'Usuario'}
-            </span>
-          )}
-
+          {/* Carrito */}
           <Link to="/carrito" className={styles.cartIcon}>
             🛒
             {itemCount > 0 && <span className={styles.badge}>{itemCount}</span>}
           </Link>
+
+          {/* Menú de Usuario */}
+          {isAuthenticated ? (
+            <div className={styles.userMenuContainer} ref={userMenuRef}>
+              <button
+                className={styles.userMenuBtn}
+                onClick={() => setShowUserMenu(!showUserMenu)}
+              >
+                <span className={styles.userName}>
+                  Hola, {user?.displayName?.split(' ')[0] || 'Usuario'}
+                </span>
+                <span className={styles.menuIcon}>▼</span>
+              </button>
+
+              {showUserMenu && (
+                <div className={styles.userDropdown}>
+                  <Link to="/" className={styles.menuItem}>
+                    👤 Mi Perfil
+                  </Link>
+                  <Link to="/" className={styles.menuItem}>
+                    🏪 Vender
+                  </Link>
+                  <Link to="/" className={styles.menuItem}>
+                    ❤️ Mis Favoritos
+                  </Link>
+                  <Link to="/" className={styles.menuItem}>
+                    📦 Mis Compras
+                  </Link>
+                  <hr className={styles.divider} />
+                  <button
+                    className={styles.logoutBtn}
+                    onClick={handleLogout}
+                  >
+                    🚪 Cerrar Sesión
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className={styles.authQuickBottom}>
+              <Link to="/login" className={styles.loginLink}>Ingresa</Link>
+              <Link to="/registro" className={styles.registerLink}>Regístrate</Link>
+            </div>
+          )}
 
           <button
             className={styles.hamburger}

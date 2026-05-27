@@ -1,49 +1,34 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import ProductCard from './ProductCard';
 import Filters from './Filters';
 import styles from './ProductList.module.scss';
-import { DUMMY_PRODUCTS } from '../../data/dummyData';
+import { useProducts } from '../../hooks/useProducts';
 
 export default function ProductList() {
-  const [products] = useState(DUMMY_PRODUCTS);
-  const [filters, setFilters] = useState({
-    category: null,
-    minPrice: 0,
-    maxPrice: 500000,
-    rating: 0,
-    search: '',
-  });
+  const { filteredProducts, filters, dispatch } = useProducts();
   const [sortBy, setSortBy] = useState('popular');
 
-  // Aplicar filtros
-  const filteredProducts = products.filter(product => {
-    if (filters.category && product.category !== filters.category) return false;
-    if (product.price < filters.minPrice || product.price > filters.maxPrice) return false;
-    if (product.rating < filters.rating) return false;
-    if (
-      filters.search &&
-      !product.name.toLowerCase().includes(filters.search.toLowerCase())
-    ) {
-      return false;
-    }
-    return true;
-  });
+  // Aplicar ordenamiento a los productos filtrados
+  const sortedProducts = useMemo(() => {
+    let result = [...filteredProducts];
 
-  // Aplicar ordenamiento
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    switch (sortBy) {
-      case 'price-asc':
-        return a.price - b.price;
-      case 'price-desc':
-        return b.price - a.price;
-      case 'rating':
-        return b.rating - a.rating;
-      case 'newest':
-        return b.id - a.id;
-      default:
-        return 0;
-    }
-  });
+    result.sort((a, b) => {
+      switch (sortBy) {
+        case 'price-asc':
+          return a.price - b.price;
+        case 'price-desc':
+          return b.price - a.price;
+        case 'rating':
+          return (b.rating || 0) - (a.rating || 0);
+        case 'newest':
+          return b.id - a.id;
+        default:
+          return 0;
+      }
+    });
+
+    return result;
+  }, [filteredProducts, sortBy]);
 
   const handleViewDetails = (productId) => {
     console.log('Ver detalles del producto:', productId);
@@ -51,9 +36,9 @@ export default function ProductList() {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} id="product-list">
       <div className={styles.sidebar}>
-        <Filters filters={filters} setFilters={setFilters} />
+        <Filters filters={filters} dispatch={dispatch} />
       </div>
 
       <div className={styles.main}>

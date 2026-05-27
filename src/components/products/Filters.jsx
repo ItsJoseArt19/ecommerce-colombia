@@ -1,43 +1,45 @@
 import { CATEGORIES, PRICE_RANGES } from '../../data/dummyData';
 import styles from './Filters.module.scss';
 
-export default function Filters({ filters, setFilters }) {
+export default function Filters({ filters, dispatch }) {
   const handleCategoryChange = (category) => {
-    setFilters({
-      ...filters,
-      category: filters.category === category ? null : category,
+    dispatch({
+      type: 'SET_FILTER',
+      payload: {
+        category: filters.category === category ? null : category,
+      },
     });
   };
 
   const handlePriceChange = (min, max) => {
-    setFilters({
-      ...filters,
-      minPrice: min,
-      maxPrice: max,
+    dispatch({
+      type: 'SET_FILTER',
+      payload: {
+        minPrice: min,
+        maxPrice: max,
+      },
     });
   };
 
   const handleRatingChange = (rating) => {
-    setFilters({
-      ...filters,
-      rating: filters.rating === rating ? 0 : rating,
-    });
-  };
-
-  const handleSearchChange = (e) => {
-    setFilters({
-      ...filters,
-      search: e.target.value,
+    dispatch({
+      type: 'SET_FILTER',
+      payload: {
+        rating: filters.rating === rating ? 0 : rating,
+      },
     });
   };
 
   const handleReset = () => {
-    setFilters({
-      category: null,
-      minPrice: 0,
-      maxPrice: 500000,
-      rating: 0,
-      search: '',
+    dispatch({
+      type: 'SET_FILTER',
+      payload: {
+        category: null,
+        minPrice: 0,
+        maxPrice: 500000,
+        rating: 0,
+        search: '',
+      },
     });
   };
 
@@ -57,7 +59,12 @@ export default function Filters({ filters, setFilters }) {
           type="text"
           placeholder="Buscar productos..."
           value={filters.search}
-          onChange={handleSearchChange}
+          onChange={(e) =>
+            dispatch({
+              type: 'SET_FILTER',
+              payload: { search: e.target.value },
+            })
+          }
           className={styles.input}
         />
       </div>
