@@ -1,9 +1,9 @@
 .hero {
   align-items: stretch;
   background:
-    linear-gradient(90deg, rgba(255, 215, 0, 0.18), transparent 24%),
-    linear-gradient(135deg, #063f2d, #0f6b45 58%, #12345f);
-  color: #fff;
+    linear-gradient(90deg, rgba(200, 137, 43, 0.18), transparent 24%),
+    linear-gradient(135deg, var(--color-primary-dark), var(--color-primary) 58%, var(--color-secondary));
+  color: var(--color-surface);
   display: grid;
   gap: 2rem;
   grid-template-columns: minmax(0, 1fr) 380px;
@@ -17,7 +17,7 @@
   max-width: 760px;
 
   span {
-    color: #fde68a;
+    color: #f3d39a;
     font-size: 0.82rem;
     font-weight: 850;
     letter-spacing: 0;
@@ -25,7 +25,7 @@
   }
 
   h1 {
-    color: #fff;
+    color: var(--color-surface);
     font-size: clamp(2.2rem, 5vw, 4.6rem);
     font-weight: 900;
     letter-spacing: 0;
@@ -59,13 +59,13 @@
   }
 
   a:first-child {
-    background: #fff;
-    color: #0f6b45;
+    background: var(--color-surface);
+    color: var(--color-primary-dark);
   }
 
   a:last-child {
     border: 1px solid rgba(255, 255, 255, 0.45);
-    color: #fff;
+    color: var(--color-surface);
   }
 }
 
@@ -88,14 +88,14 @@
   }
 
   span {
-    color: #fde68a;
+    color: #f3d39a;
     font-size: 0.75rem;
     font-weight: 850;
     text-transform: uppercase;
   }
 
   h2 {
-    color: #fff;
+    color: var(--color-surface);
     font-size: 1.2rem;
     font-weight: 850;
     letter-spacing: 0;

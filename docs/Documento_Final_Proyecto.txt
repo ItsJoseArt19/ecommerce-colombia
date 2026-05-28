@@ -1,0 +1,213 @@
+DOCUMENTO FINAL DEL PROYECTO
+MercadoLocal - Plataforma web de compra y seguimiento de productos locales
+
+1. Introduccion
+
+MercadoLocal es una plataforma web de comercio electronico orientada a la compra y venta de productos locales. El sistema permite consultar un catalogo de productos, ver detalles de cada articulo, agregar productos al carrito, realizar un proceso de pago, registrar ordenes, consultar el historial de compras, hacer seguimiento individual de los pedidos y mantener un chat asociado a cada compra realizada.
+
+El proyecto fue desarrollado como una aplicacion web de tipo Single Page Application, con una organizacion modular basada en componentes, paginas, rutas, servicios, contextos, hooks y estructuras auxiliares. El enfoque principal del sistema es entregar una experiencia funcional de e-commerce, cumpliendo con los requerimientos de navegacion publica y privada, autenticacion, transaccion de datos, persistencia de ordenes, seguimiento logistico y uso aplicado de estructuras de datos.
+
+2. Alcance del sistema
+
+El alcance funcional del sistema contempla los siguientes modulos principales:
+
+Catalogo de productos:
+El usuario puede visualizar productos disponibles, consultar imagenes, nombre, precio, categoria, calificacion y detalles principales. El catalogo permite organizar los productos para facilitar su consulta y seleccion.
+
+Detalle de producto:
+Cada producto puede consultarse de manera individual para revisar informacion ampliada antes de agregarlo al carrito.
+
+Carrito de compras:
+El sistema permite agregar productos al carrito, visualizar cantidades, calcular valores y preparar la orden antes del pago. El carrito mantiene la informacion necesaria para generar la compra.
+
+Autenticacion:
+La plataforma cuenta con registro e inicio de sesion mediante Firebase Authentication. El acceso a funcionalidades privadas, como checkout, chat, ordenes y seguimiento, requiere que el usuario este autenticado.
+
+Checkout y pago:
+El sistema incluye una vista de pago con validaciones de correo, documento, numero de tarjeta, fecha de expiracion y CVC. El flujo de pago trabaja en modo de prueba y, al aprobarse, crea una orden con identificador unico.
+
+Historial de ordenes:
+Cada compra pagada queda registrada en el historial. Las ordenes se almacenan con informacion del producto, total, ciudad de entrega, estado, fecha, usuario y numero de pedido. El sistema conserva multiples compras y no depende solo de la ultima orden.
+
+Seguimiento de entregas:
+La seccion de entregas lista todos los pedidos pagados. Al seleccionar una orden, se despliega su informacion individual y un mapa con la ruta de seguimiento. Cada pedido guarda su propio avance, por lo que el progreso no se reinicia al salir de la vista.
+
+Chat por pedido:
+La seccion de chat lista todos los pedidos pagados. Al seleccionar una orden, se abre una conversacion individual asociada al numero de pedido. El historial del chat se guarda de forma separada para cada compra.
+
+Panel administrativo:
+El proyecto incluye vistas administrativas para consultar informacion general de ventas, ordenes y productos, segun el alcance definido para el prototipo.
+
+3. Tecnologias utilizadas
+
+React:
+Se utiliza como libreria principal para construir la interfaz de usuario mediante componentes reutilizables.
+
+Vite:
+Se utiliza como herramienta de desarrollo y empaquetado del frontend, permitiendo un entorno rapido para ejecucion local y generacion de build de produccion.
+
+React Router:
+Se utiliza para administrar la navegacion de la aplicacion, incluyendo rutas publicas, rutas protegidas, rutas de usuario, rutas administrativas y rutas dinamicas por numero de pedido.
+
+Context API y hooks personalizados:
+Se utilizan para manejar estados globales del sistema, como autenticacion, carrito y productos, y para centralizar logica reutilizable.
+
+Firebase:
+Se utiliza como plataforma backend sin servidor. El proyecto integra Firebase Authentication para registro e inicio de sesion, Firestore para persistencia de datos cuando la conexion esta disponible, Storage para soporte de imagenes y Realtime Database como base para funcionalidades de comunicacion en tiempo real.
+
+LocalStorage:
+Se utiliza como persistencia local complementaria para conservar carrito, ordenes, progreso de seguimiento y chats por pedido. Esta persistencia permite que el prototipo mantenga datos funcionales aun cuando no se dependa completamente de un backend propio.
+
+Leaflet y React Leaflet:
+Se utilizan para renderizar mapas interactivos gratuitos dentro de la aplicacion.
+
+OpenStreetMap:
+Se utiliza como proveedor gratuito de tiles para visualizar el mapa base.
+
+Nominatim:
+Se utiliza como servicio gratuito para obtener coordenadas a partir de direcciones o ciudades.
+
+OSRM:
+Se utiliza como servicio gratuito para calcular rutas entre dos puntos y obtener coordenadas que se dibujan sobre el mapa mediante una linea de trayecto.
+
+SCSS Modules:
+Se utiliza para organizar estilos por componente o pagina, evitando conflictos globales y manteniendo una estructura visual mas controlada.
+
+JavaScript:
+Se utiliza como lenguaje principal para implementar la logica de negocio, componentes, servicios, validaciones y estructuras de datos.
+
+ESLint:
+Se utiliza para validar calidad basica del codigo y detectar errores de sintaxis, hooks y convenciones.
+
+Netlify:
+Se contempla como plataforma de despliegue del frontend, de acuerdo con los requisitos del proyecto.
+
+4. Arquitectura general
+
+El proyecto se organiza bajo una estructura modular:
+
+src/components:
+Contiene componentes reutilizables de la interfaz, como tarjetas de producto, listas, filtros, encabezado y elementos compartidos.
+
+src/pages:
+Contiene las vistas principales del sistema, como inicio, carrito, checkout, autenticacion, chat, entregas, ordenes, administracion y detalle de producto.
+
+src/routes:
+Contiene la configuracion de rutas publicas, protegidas, privadas de usuario y administrativas.
+
+src/context:
+Contiene los proveedores de estado global utilizados por la aplicacion.
+
+src/hooks:
+Contiene hooks personalizados para consumir estados y servicios de manera mas ordenada.
+
+src/services:
+Contiene la comunicacion con servicios externos o logica de integracion, como Firebase, pagos, mapas y chat.
+
+src/helpers:
+Contiene funciones auxiliares y las estructuras de datos implementadas para cumplir los requerimientos academicos y apoyar procesos reales del sistema.
+
+tests:
+Contiene pruebas basicas para verificar el funcionamiento de las estructuras de datos.
+
+5. Estructuras de datos implementadas
+
+El proyecto implementa cinco estructuras de datos en JavaScript. Estas estructuras no se agregan solamente como requisito teorico, sino que se integran con funcionalidades del sistema.
+
+5.1 Cola - Queue
+
+Archivo:
+src/helpers/Queue.js
+
+Uso en el proyecto:
+La cola se utiliza para representar el procesamiento de productos dentro de una orden. En el checkout, los productos agregados al carrito pueden organizarse bajo un criterio FIFO, es decir, el primer producto en ingresar es el primero en ser preparado.
+
+Justificacion:
+Una cola es adecuada para modelar procesos secuenciales. En un e-commerce, las ordenes y productos suelen procesarse en el orden en que llegan. Por esta razon, la estructura permite representar de forma clara el alistamiento de productos y el flujo de preparacion de una compra.
+
+5.2 Pila - Stack
+
+Archivo:
+src/helpers/Stack.js
+
+Uso en el proyecto:
+La pila se utiliza para representar el historial de mensajes del chat. Permite identificar el ultimo mensaje agregado y ejemplificar un comportamiento LIFO, donde el ultimo elemento ingresado es el primero que puede consultarse.
+
+Justificacion:
+La pila es util para historiales recientes, acciones reversibles o consultas del ultimo evento ocurrido. En el chat del proyecto permite obtener rapidamente el ultimo mensaje y explicar la logica de almacenamiento de interacciones recientes.
+
+5.3 Arbol binario - Binary Tree
+
+Archivo:
+src/helpers/BinaryTree.js
+
+Uso en el proyecto:
+El arbol binario se utiliza para organizar categorias o valores relacionados con la clasificacion de productos. Desde src/helpers/commerceStructures.js se construye una estructura de categorias para apoyar la organizacion jerarquica del catalogo.
+
+Justificacion:
+Un arbol permite representar informacion jerarquica. En un catalogo de comercio electronico, las categorias y subcategorias pueden organizarse de esta manera para mejorar busquedas, filtros y clasificacion de productos.
+
+5.4 Heap maximo - Max Heap
+
+Archivo:
+src/helpers/Heap.js
+
+Uso en el proyecto:
+El heap se utiliza para construir un ranking de productos a partir de su calificacion y cantidad de reseñas. Los productos con mayor prioridad se extraen primero.
+
+Justificacion:
+Un heap maximo es adecuado cuando se necesita obtener rapidamente el elemento con mayor prioridad. En el sistema se aplica para destacar productos mejor valorados, lo cual es coherente con una plataforma de ventas donde la reputacion y calificacion influyen en la decision de compra.
+
+5.5 Grafo - Graph
+
+Archivo:
+src/helpers/Graph.js
+
+Uso en el proyecto:
+El grafo se utiliza para representar conexiones entre ciudades y rutas logisticas. En la vista de entregas, cada ciudad puede entenderse como un nodo y cada conexion como una ruta disponible. Esta estructura se complementa con servicios de mapas para mostrar recorridos visuales de seguimiento.
+
+Justificacion:
+Un grafo es la estructura adecuada para representar redes de transporte, ciudades conectadas y trayectos. En el proyecto se utiliza para sustentar la funcionalidad de seguimiento de pedidos, ya que el envio de un producto puede modelarse como un recorrido entre nodos.
+
+6. Persistencia de ordenes, chat y seguimiento
+
+Cada orden pagada se almacena con un identificador unico. Esto permite que el seguimiento y el chat se relacionen directamente con el numero de pedido.
+
+El seguimiento guarda el avance individual de cada orden mediante una clave asociada al pedido. De esta forma, si el usuario sale de la vista de entregas y regresa posteriormente, el mapa conserva el punto en el que iba el producto.
+
+El chat tambien se almacena por numero de pedido. Esto evita mezclar conversaciones de diferentes compras y permite que cada producto comprado tenga su propio historial de soporte o comunicacion con el vendedor.
+
+7. Seguridad y validacion de datos
+
+El sistema incluye validaciones basicas en formularios importantes. En el checkout se valida que el correo tenga formato correcto, que el documento tenga una longitud minima, que el numero de tarjeta tenga el formato esperado, que la fecha de expiracion sea valida y que el CVC tenga la cantidad de digitos requerida.
+
+Las rutas privadas se protegen para que solo usuarios autenticados puedan acceder a secciones como checkout, chat, seguimiento, perfil y ordenes. Adicionalmente, el chat y seguimiento solo se habilitan cuando existe una orden pagada.
+
+8. Alcance tecnico actual
+
+El sistema cubre las funcionalidades principales de un e-commerce academico y funcional:
+
+- Registro e inicio de sesion.
+- Catalogo de productos.
+- Detalle de producto.
+- Carrito de compras.
+- Checkout con validaciones.
+- Creacion de ordenes.
+- Historial de compras.
+- Seguimiento individual por pedido.
+- Mapa interactivo con ruta.
+- Chat individual por pedido.
+- Panel administrativo basico.
+- Uso aplicado de cinco estructuras de datos.
+- Integracion con Firebase.
+- Preparacion para despliegue en Netlify.
+
+9. Limitaciones del prototipo
+
+El sistema esta orientado a un entorno academico y de demostracion. Los pagos funcionan en modo de prueba y no procesan cobros reales. Algunas funcionalidades de backend se apoyan en Firebase y en persistencia local para mantener la operacion del prototipo. Para un entorno completamente productivo seria necesario reforzar reglas de seguridad en Firebase, usar una pasarela de pagos real con backend seguro, almacenar ordenes permanentemente en base de datos y configurar roles administrativos con mayor control.
+
+10. Conclusiones
+
+MercadoLocal cumple con el objetivo de implementar una plataforma web de comercio electronico con funcionalidades publicas y privadas, autenticacion, carrito, pagos de prueba, ordenes, chat, seguimiento logistico y estructuras de datos aplicadas.
+
+El proyecto integra tecnologias actuales del ecosistema frontend y servicios gratuitos para mapas y rutas. Las estructuras de datos implementadas tienen una relacion directa con procesos reales del sistema, lo que permite demostrar su utilidad dentro de una aplicacion practica y no solamente como ejercicios aislados.

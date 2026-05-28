@@ -6,6 +6,39 @@ import Stack from '../helpers/Stack';
 // Pila para historial de mensajes
 const messageHistory = new Stack();
 
+const normalizeText = (text) =>
+  text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+
+const containsAnyKeyword = (text, keywords) =>
+  keywords.some((keyword) => text.includes(normalizeText(keyword)));
+
+export const evaluateBotResponse = (message) => {
+  const normalizedMessage = normalizeText(message);
+
+  if (containsAnyKeyword(normalizedMessage, ['tardando', 'demora', 'cuándo llega', 'cuando llega', 'envío', 'envio'])) {
+    return "Recuerda que nuestros tiempos normales de entrega son de 5 a 10 días hábiles. Puedes monitorear tu paquete en la pestaña de 'Entregas'.";
+  }
+
+  if (containsAnyKeyword(normalizedMessage, ['pago', 'tarjeta', 'efectivo'])) {
+    return 'Aceptamos pagos seguros con tarjetas de crédito, débito (PSE) y puntos autorizados. El pago debe realizarse antes del envío.';
+  }
+
+  if (containsAnyKeyword(normalizedMessage, ['devolución', 'devolucion', 'garantía', 'garantia', 'dañado', 'danado'])) {
+    return 'Cuentas con 30 días para solicitar una devolución. Por favor, describe el problema para que un asesor lo revise.';
+  }
+
+  if (containsAnyKeyword(normalizedMessage, ['hola', 'buenos días', 'buenos dias', 'tardes'])) {
+    return '¡Hola! Soy el asistente de MercadoLocal. ¿En qué te puedo ayudar hoy con tu compra?';
+  }
+
+  return 'Mensaje recibido. Te responderemos con detalles específicos a la brevedad.';
+};
+
+export const getBotResponseDelay = () => Math.floor(1500 + Math.random() * 500);
+
 // Crear conversación
 export const createConversation = async (userId, vendorId) => {
   try {

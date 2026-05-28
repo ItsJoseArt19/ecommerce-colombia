@@ -1,17 +1,14 @@
-/* Variables Globales */
-$primary-color: #22c55e;
-$secondary-color: #16a34a;
-$success-color: #10b981;
-$danger-color: #ff6b6b;
-$warning-color: #ffd93d;
-$dark: #1f2937;
-$light: #f0fdf4;
-$gray: #6b7280;
+@use "sass:color";
 
-// Colores de la bandera colombiana
-$colombia-yellow: #FFD700;
-$colombia-blue: #003087;
-$colombia-red: #CE1126;
+/* Variables Globales */
+$primary-color: #1f7a4d;
+$secondary-color: #145536;
+$success-color: #2f8f5b;
+$danger-color: #b43b3b;
+$warning-color: #c8892b;
+$dark: #10251a;
+$light: #f6f7f4;
+$gray: #6c7b70;
 
 /* Reset */
 * {
@@ -28,7 +25,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
     Arial, sans-serif;
   background-color: $light;
-  color: #333;
+  color: var(--color-text);
   line-height: 1.6;
 }
 
@@ -71,7 +68,7 @@ p {
   border-radius: 4px;
 
   &:hover {
-    background: darken($gray, 10%);
+    background: color.adjust($gray, $lightness: -10%);
   }
 }
 
@@ -97,11 +94,11 @@ p {
 
 .btn-primary {
   background: linear-gradient(135deg, $primary-color 0%, $secondary-color 100%);
-  color: white;
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+  color: var(--color-surface);
+  box-shadow: 0 2px 8px rgba(31, 122, 77, 0.18);
 
   &:hover {
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+    box-shadow: 0 4px 12px rgba(31, 122, 77, 0.28);
   }
 }
 
@@ -111,7 +108,7 @@ p {
   color: $dark;
 
   &:hover {
-    background: darken($light, 5%);
+    background: color.adjust($light, $lightness: -5%);
   }
 }
 

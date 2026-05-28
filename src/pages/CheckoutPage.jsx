@@ -4,23 +4,108 @@ import { Link } from 'react-router-dom';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
 import { buildOrderQueue } from '../helpers/commerceStructures';
+import { saveStoredOrder } from '../helpers/localOrders';
+import { createOrder } from '../services/cartService';
+import {
+  createPaymentToken,
+  processPayment,
+  validateCardNumber,
+  validateCVC,
+  validateExpiryDate,
+} from '../services/paymentService';
 import styles from './CheckoutPage.module.scss';
 
 const formatCurrency = (value) =>
   value.toLocaleString('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const onlyDigits = (value) => value.replace(/\D/g, '');
+
+const formatCardNumber = (value) =>
+  onlyDigits(value)
+    .slice(0, 16)
+    .replace(/(.{4})/g, '$1 ')
+    .trim();
+
+const formatExpiryDate = (value) => {
+  const digits = onlyDigits(value).slice(0, 4);
+  if (!digits) return '';
+
+  let month = digits.slice(0, 2);
+  const year = digits.slice(2);
+
+  if (digits.length === 1 && Number(digits) > 1) {
+    month = `0${digits}`;
+    return `${month}/`;
+  }
+
+  if (digits.length >= 2) {
+    const monthNumber = Number(month);
+    if (monthNumber === 0) month = '01';
+    if (monthNumber > 12) month = '12';
+  }
+
+  return year ? `${month}/${year}` : month;
+};
+
+const createOrderId = () => {
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const random =
+    typeof crypto !== 'undefined' && crypto.randomUUID
+      ? crypto.randomUUID().slice(0, 4)
+      : Math.random().toString(36).slice(2, 6);
+
+  return `ML-${timestamp}-${random.toUpperCase()}`;
+};
 
 export default function CheckoutPage() {
   const { dispatch, items, total } = useCart();
   const { user } = useAuth();
   const [orderId, setOrderId] = useState('');
   const [deliveryCity, setDeliveryCity] = useState('Bogota');
+  const [paymentError, setPaymentError] = useState('');
+  const [cardDetails, setCardDetails] = useState({
+    number: '',
+    expiry: '',
+    cvc: '',
+  });
+  const [documentNumber, setDocumentNumber] = useState('');
+  const [email, setEmail] = useState(user?.email || '');
   const queue = useMemo(() => buildOrderQueue(items), [items]);
   const shipping = total >= 120000 || total === 0 ? 0 : 12000;
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setPaymentError('');
+
+    if (!emailPattern.test(email.trim())) {
+      setPaymentError('Ingresa un correo valido con @ y dominio.');
+      return;
+    }
+
+    if (documentNumber.trim().length < 6) {
+      setPaymentError('Ingresa un numero de identificacion valido.');
+      return;
+    }
+
+    if (!validateCardNumber(cardDetails.number)) {
+      setPaymentError('Numero de tarjeta invalido.');
+      return;
+    }
+
+    if (!validateExpiryDate(cardDetails.expiry)) {
+      setPaymentError('Fecha de expiracion invalida.');
+      return;
+    }
+
+    if (!validateCVC(cardDetails.cvc)) {
+      setPaymentError('Codigo CVC invalido.');
+      return;
+    }
+
     const nextOrder = queue.front();
-    const generatedId = `ML-${Date.now().toString().slice(-6)}`;
+    const generatedId = createOrderId();
     const orderItems = items.map((item) => ({
       id: item.id,
       image: item.image,
@@ -29,21 +114,38 @@ export default function CheckoutPage() {
       quantity: item.quantity,
       vendor: item.vendor || 'Vendedor MercadoLocal',
     }));
+    const order = {
+      id: generatedId,
+      firstProduct: nextOrder?.name,
+      vendor: nextOrder?.vendor || 'Vendedor MercadoLocal',
+      deliveryCity,
+      items: orderItems,
+      paymentStatus: 'paid',
+      chatEnabled: true,
+      status: 'processing',
+      total: total + shipping,
+      userId: user?.uid || null,
+      customerEmail: email.trim(),
+      documentNumber,
+      createdAt: new Date().toISOString(),
+    };
+
+    const token = await createPaymentToken(cardDetails);
+    const payment = await processPayment(order.total, token, generatedId);
+    if (payment.status !== 'succeeded') {
+      setPaymentError('El pago fue rechazado. Verifica los datos de la tarjeta.');
+      return;
+    }
+
+    saveStoredOrder(order);
+
+    try {
+      await createOrder(user.uid, orderItems, order.total, { city: deliveryCity });
+    } catch (error) {
+      console.warn('No se pudo guardar la orden en Firestore. Se conserva localmente.', error);
+    }
+
     setOrderId(generatedId);
-    localStorage.setItem(
-      'lastOrder',
-      JSON.stringify({
-        id: generatedId,
-        firstProduct: nextOrder?.name,
-        vendor: nextOrder?.vendor || 'Vendedor MercadoLocal',
-        deliveryCity,
-        items: orderItems,
-        paymentStatus: 'paid',
-        chatEnabled: true,
-        total: total + shipping,
-        createdAt: new Date().toISOString(),
-      })
-    );
     dispatch({ type: 'CLEAR_CART' });
   };
 
@@ -63,8 +165,8 @@ export default function CheckoutPage() {
               <h2>Pago aprobado: {orderId}</h2>
               <p>Ahora puedes hablar con el vendedor sobre esta compra.</p>
               <div className={styles.successActions}>
-                <Link to="/chat">Hablar con vendedor</Link>
-                <Link to="/entregas">Ver seguimiento</Link>
+                <Link to={`/chat/${orderId}`}>Hablar con vendedor</Link>
+                <Link to={`/entregas/${orderId}`}>Ver seguimiento</Link>
                 <Link to="/">Volver al catalogo</Link>
               </div>
             </div>
@@ -76,7 +178,15 @@ export default function CheckoutPage() {
               </label>
               <label>
                 Correo
-                <input defaultValue={user?.email || ''} required type="email" />
+                <input
+                  autoComplete="email"
+                  onChange={(event) => setEmail(event.target.value)}
+                  pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+                  required
+                  title="Ingresa un correo valido, por ejemplo usuario@correo.com"
+                  type="email"
+                  value={email}
+                />
               </label>
               <label>
                 Direccion de entrega
@@ -98,19 +208,76 @@ export default function CheckoutPage() {
                   </select>
                 </label>
                 <label>
-                  Metodo de pago
-                  <select required>
-                    <option>Tarjeta</option>
-                    <option>Pago contra entrega</option>
-                  </select>
+                  Numero de identificacion
+                  <input
+                    autoComplete="off"
+                    inputMode="numeric"
+                    maxLength={12}
+                    minLength={6}
+                    onChange={(event) =>
+                      setDocumentNumber(onlyDigits(event.target.value).slice(0, 12))
+                    }
+                    placeholder="CC / NIT"
+                    required
+                    value={documentNumber}
+                  />
                 </label>
               </div>
               <div className={styles.grid}>
                 <label>
-                  Documento
-                  <input required placeholder="CC / NIT" />
+                  Numero de tarjeta
+                  <input
+                    autoComplete="cc-number"
+                    inputMode="numeric"
+                    onChange={(event) =>
+                      setCardDetails((current) => ({
+                        ...current,
+                        number: formatCardNumber(event.target.value),
+                      }))
+                    }
+                    placeholder="4242 4242 4242 4242"
+                    required
+                    title="Ingresa 16 digitos. Se separan automaticamente cada 4 numeros."
+                    value={cardDetails.number}
+                  />
+                </label>
+                <label>
+                  Expiracion
+                  <input
+                    autoComplete="cc-exp"
+                    inputMode="numeric"
+                    maxLength={5}
+                    onChange={(event) =>
+                      setCardDetails((current) => ({
+                        ...current,
+                        expiry: formatExpiryDate(event.target.value),
+                      }))
+                    }
+                    placeholder="12/30"
+                    required
+                    title="Formato MM/AA. Si escribes 4, se convierte en 04/."
+                    value={cardDetails.expiry}
+                  />
                 </label>
               </div>
+              <label>
+                CVC
+                <input
+                  autoComplete="cc-csc"
+                  inputMode="numeric"
+                  onChange={(event) =>
+                    setCardDetails((current) => ({
+                      ...current,
+                      cvc: onlyDigits(event.target.value).slice(0, 4),
+                    }))
+                  }
+                  placeholder="123"
+                  required
+                  title="Ingresa 3 o 4 digitos."
+                  value={cardDetails.cvc}
+                />
+              </label>
+              {paymentError && <p className={styles.error}>{paymentError}</p>}
               <button type="submit">
                 Confirmar orden
               </button>

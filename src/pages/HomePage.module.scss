@@ -1,32 +1,6 @@
 .homePage {
-  background: #f5f7fb;
+  background: var(--color-bg);
   min-height: 100vh;
-}
-
-.trustBar {
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  text-align: left;
-
-  article {
-    border-right: 1px solid #e5e7eb;
-    display: grid;
-    gap: 0.2rem;
-    padding: 1.25rem 1.5rem;
-  }
-
-  strong {
-    color: #111827;
-    font-size: 1.35rem;
-    font-weight: 900;
-  }
-
-  span {
-    color: #64748b;
-    font-size: 0.86rem;
-  }
 }
 
 .categories,
@@ -41,14 +15,14 @@
   max-width: 720px;
 
   span {
-    color: #16a34a;
+    color: var(--color-primary);
     font-size: 0.8rem;
     font-weight: 850;
     text-transform: uppercase;
   }
 
   h2 {
-    color: #111827;
+    color: var(--color-heading);
     font-size: 1.7rem;
     font-weight: 900;
     letter-spacing: 0;
@@ -56,7 +30,7 @@
   }
 
   p {
-    color: #64748b;
+    color: var(--color-muted);
     line-height: 1.5;
   }
 }
@@ -68,10 +42,10 @@
 }
 
 .categoryCard {
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  color: #111827;
+  color: var(--color-heading);
   overflow: hidden;
   text-decoration: none;
 
@@ -93,13 +67,13 @@
   }
 
   span {
-    color: #64748b;
+    color: var(--color-muted);
     font-size: 0.85rem;
   }
 }
 
 .structureNote {
-  color: #64748b;
+  color: var(--color-muted);
   font-size: 0.9rem;
   margin-top: 1rem;
 }
@@ -111,8 +85,8 @@
 
   article {
     align-items: center;
-    background: #fff;
-    border: 1px solid #e5e7eb;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
     border-radius: 8px;
     display: grid;
     gap: 0.9rem;
@@ -121,7 +95,7 @@
   }
 
   span {
-    color: #16a34a;
+    color: var(--color-primary);
     font-size: 1.2rem;
     font-weight: 900;
   }
@@ -139,16 +113,15 @@
   }
 
   strong {
-    color: #111827;
+    color: var(--color-heading);
   }
 
   small {
-    color: #64748b;
+    color: var(--color-muted);
   }
 }
 
 @media (max-width: 980px) {
-  .trustBar,
   .categoryGrid,
   .featuredGrid {
     grid-template-columns: repeat(2, 1fr);
@@ -156,7 +129,6 @@
 }
 
 @media (max-width: 620px) {
-  .trustBar,
   .categoryGrid,
   .featuredGrid {
     grid-template-columns: 1fr;

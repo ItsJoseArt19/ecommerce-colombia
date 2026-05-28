@@ -1,18 +1,21 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import ChatPage from '../pages/ChatPage';
-import { getLastPaidOrder } from '../helpers/orders';
+import { getStoredOrders } from '../helpers/localOrders';
 import ProtectedRoute from './ProtectedRoute';
 
 export default function PaidChatRoute() {
-  const paidOrder = getLastPaidOrder();
+  const { orderId } = useParams();
+  const paidOrders = getStoredOrders().filter(
+    (order) => order.paymentStatus === 'paid' && order.chatEnabled
+  );
 
-  if (!paidOrder) {
+  if (paidOrders.length === 0) {
     return <Navigate to="/carrito" replace state={{ reason: 'chat-requires-paid-order' }} />;
   }
 
   return (
     <ProtectedRoute>
-      <ChatPage paidOrder={paidOrder} />
+      <ChatPage initialOrderId={orderId} paidOrders={paidOrders} />
     </ProtectedRoute>
   );
 }

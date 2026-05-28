@@ -5,13 +5,13 @@
 
 .header {
   align-items: center;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   justify-content: space-between;
   padding-bottom: 0.9rem;
 
   h3 {
-    color: #111827;
+    color: var(--color-heading);
     font-size: 1.1rem;
     font-weight: 850;
     letter-spacing: 0;
@@ -22,7 +22,7 @@
 .resetBtn {
   background: transparent;
   border: 0;
-  color: #16a34a;
+  color: var(--color-primary);
   cursor: pointer;
   font: inherit;
   font-size: 0.85rem;
@@ -30,16 +30,16 @@
 }
 
 .search {
-  color: #1f2937;
+  color: var(--color-heading);
   display: grid;
   font-size: 0.9rem;
   font-weight: 850;
   gap: 0.45rem;
 
   input {
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--color-border-strong);
     border-radius: 6px;
-    color: #111827;
+    color: var(--color-heading);
     font: inherit;
     padding: 0.7rem 0.8rem;
     width: 100%;
@@ -52,7 +52,7 @@
   gap: 0.5rem;
 
   h4 {
-    color: #111827;
+    color: var(--color-heading);
     flex: 0 0 100%;
     font-size: 0.9rem;
     font-weight: 850;
@@ -71,13 +71,13 @@
 }
 
 .chip {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  color: #475569;
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  color: var(--color-muted);
 }
 
 .activeChip {
-  background: #16a34a;
-  border: 1px solid #16a34a;
-  color: #fff;
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  color: var(--color-surface);
 }

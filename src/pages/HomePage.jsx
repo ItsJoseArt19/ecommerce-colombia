@@ -14,25 +14,6 @@ export default function HomePage() {
       <Header />
       <HeroBanner />
 
-      <section className={styles.trustBar} aria-label="Indicadores de confianza">
-        <article>
-          <strong>10+</strong>
-          <span>productos curados</span>
-        </article>
-        <article>
-          <strong>5</strong>
-          <span>estructuras de datos aplicadas</span>
-        </article>
-        <article>
-          <strong>24/7</strong>
-          <span>chat preparado en tiempo real</span>
-        </article>
-        <article>
-          <strong>Firebase</strong>
-          <span>login, registro y base de datos</span>
-        </article>
-      </section>
-
       <section className={styles.categories} id="categorias">
         <div className={styles.sectionHeader}>
           <span>Categorias</span>

@@ -1,25 +1,25 @@
 .page {
-  background: #f5f7fb;
+  background: var(--color-bg);
   min-height: 100vh;
 }
 
 .panel {
-  background: #fff;
-  border: 1px solid #e5e7eb;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   margin: 1.5rem;
   padding: 2rem;
   text-align: left;
 
   span {
-    color: #16a34a;
+    color: var(--color-primary);
     font-size: 0.8rem;
     font-weight: 850;
     text-transform: uppercase;
   }
 
   h1 {
-    color: #111827;
+    color: var(--color-heading);
     font-size: 1.8rem;
     font-weight: 850;
     letter-spacing: 0;
@@ -27,15 +27,102 @@
   }
 
   p {
-    color: #4b5563;
+    color: var(--color-text);
     margin-bottom: 0.5rem;
   }
 
   a {
-    color: #16a34a;
+    color: var(--color-primary);
     display: inline-flex;
     font-weight: 850;
     margin-top: 1rem;
     text-decoration: none;
+  }
+}
+
+.detailPanel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(260px, 420px) 1fr;
+  margin: 1.5rem;
+  padding: 2rem;
+  text-align: left;
+
+  img {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    object-fit: cover;
+    width: 100%;
+  }
+
+  section {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  span {
+    color: var(--color-primary);
+    font-size: 0.8rem;
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    color: var(--color-heading);
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 0;
+    margin: 0;
+  }
+
+  p {
+    color: var(--color-text);
+  }
+
+  strong {
+    color: var(--color-primary);
+    font-size: 1.35rem;
+  }
+
+  button {
+    background: var(--color-primary);
+    border: 0;
+    border-radius: 6px;
+    color: var(--color-surface);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 850;
+    max-width: 220px;
+    padding: 0.8rem 1rem;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+}
+
+.list {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+
+  article {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    display: grid;
+    gap: 0.25rem;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .detailPanel {
+    grid-template-columns: 1fr;
+    margin: 1rem;
+    padding: 1.25rem;
   }
 }

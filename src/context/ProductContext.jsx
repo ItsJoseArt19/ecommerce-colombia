@@ -1,5 +1,6 @@
 import { createContext, useReducer, useEffect } from 'react';
 import { DUMMY_PRODUCTS } from '../data/dummyData';
+import { getAllProducts } from '../services/productService';
 
 export const ProductContext = createContext();
 
@@ -57,6 +58,33 @@ function productReducer(state, action) {
 
 export function ProductProvider({ children }) {
   const [state, dispatch] = useReducer(productReducer, initialState);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadProducts = async () => {
+      dispatch({ type: 'SET_LOADING', payload: true });
+      try {
+        const products = await getAllProducts();
+        if (mounted && products.length > 0) {
+          dispatch({ type: 'SET_PRODUCTS', payload: products });
+        } else if (mounted) {
+          dispatch({ type: 'SET_PRODUCTS', payload: DUMMY_PRODUCTS });
+        }
+      } catch (error) {
+        if (mounted) {
+          dispatch({ type: 'SET_ERROR', payload: error.message });
+          dispatch({ type: 'SET_PRODUCTS', payload: DUMMY_PRODUCTS });
+        }
+      }
+    };
+
+    loadProducts();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   // Aplicar filtros cuando cambien
   useEffect(() => {

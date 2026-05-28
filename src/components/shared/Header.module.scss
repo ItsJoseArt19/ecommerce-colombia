@@ -1,7 +1,7 @@
 .header {
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-  color: #111827;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-heading);
   position: sticky;
   top: 0;
   width: 100%;
@@ -9,8 +9,8 @@
 }
 
 .announcement {
-  background: linear-gradient(90deg, #ffd700, #003087 50%, #ce1126);
-  color: #fff;
+  background: var(--color-secondary);
+  color: var(--color-surface);
   font-size: 0.78rem;
   font-weight: 800;
   padding: 0.35rem 1rem;
@@ -27,16 +27,16 @@
 
 .logo {
   align-items: center;
-  color: #111827;
+  color: var(--color-heading);
   display: inline-flex;
   gap: 0.65rem;
   text-decoration: none;
 
   span {
     align-items: center;
-    background: #16a34a;
+    background: var(--color-primary);
     border-radius: 6px;
-    color: #fff;
+    color: var(--color-surface);
     display: inline-flex;
     font-weight: 900;
     height: 36px;
@@ -54,19 +54,20 @@
   grid-template-columns: 1fr auto;
 
   input {
-    border: 1px solid #d1d5db;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-strong);
     border-radius: 6px 0 0 6px;
-    color: #111827;
+    color: var(--color-heading);
     font: inherit;
     min-width: 0;
     padding: 0.7rem 0.85rem;
   }
 
   button {
-    background: #16a34a;
+    background: var(--color-primary);
     border: 0;
     border-radius: 0 6px 6px 0;
-    color: #fff;
+    color: var(--color-surface);
     cursor: pointer;
     font: inherit;
     font-weight: 850;
@@ -86,7 +87,7 @@
 .cart,
 .menuButton {
   border-radius: 6px;
-  color: #111827;
+  color: var(--color-heading);
   font: inherit;
   font-size: 0.86rem;
   font-weight: 800;
@@ -97,27 +98,27 @@
 
 .ghostBtn,
 .menuButton {
-  background: #fff;
-  border: 1px solid #d1d5db;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
   cursor: pointer;
 }
 
 .primaryBtn {
-  background: #111827;
-  color: #fff;
+  background: var(--color-secondary);
+  color: var(--color-surface);
 }
 
 .cart {
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  color: #166534;
+  background: var(--color-primary-soft);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-primary-dark);
   position: relative;
 
   span {
     align-items: center;
-    background: #ce1126;
+    background: var(--color-accent);
     border-radius: 999px;
-    color: #fff;
+    color: var(--color-surface);
     display: inline-flex;
     font-size: 0.72rem;
     height: 20px;
@@ -140,10 +141,14 @@
   padding: 0 1.5rem 0.85rem;
 
   a {
-    color: #4b5563;
+    color: var(--color-muted);
     font-size: 0.86rem;
     font-weight: 750;
     text-decoration: none;
+
+    &:hover {
+      color: var(--color-primary-dark);
+    }
   }
 }
 
@@ -168,7 +173,7 @@
 
   .navOpen {
     align-items: flex-start;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid var(--color-border);
     display: flex;
     flex-direction: column;
   }
@@ -189,158 +194,4 @@
   .primaryBtn {
     display: none;
   }
-
-  .userMenuContainer {
-    display: none;
-  }
-
-  .authQuickBottom {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-
-    .loginLink,
-    .registerLink {
-      padding: 0.3rem 0.6rem;
-      font-size: 0.75rem;
-    }
-  }
 }
-
-/* MENÚ DE USUARIO DROPDOWN */
-.userMenuContainer {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.userMenuBtn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.15);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.3s;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.25);
-  }
-
-  .menuIcon {
-    font-size: 0.7rem;
-    transition: transform 0.3s;
-  }
-}
-
-.userMenuBtn[aria-expanded="true"] .menuIcon {
-  transform: rotate(180deg);
-}
-
-.userDropdown {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  right: 0;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  min-width: 200px;
-  z-index: 1000;
-  overflow: hidden;
-  animation: slideDown 0.2s ease-out;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.menuItem {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.75rem 1.2rem;
-  color: #333;
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-  border-left: 3px solid transparent;
-
-  &:hover {
-    background: #f5f5f5;
-    border-left-color: #22c55e;
-    padding-left: 1rem;
-  }
-}
-
-.divider {
-  margin: 0.5rem 0;
-  border: none;
-  border-top: 1px solid #eee;
-}
-
-.logoutBtn {
-  width: 100%;
-  padding: 0.75rem 1.2rem;
-  background: none;
-  border: none;
-  color: #dc2626;
-  font-size: 0.9rem;
-  cursor: pointer;
-  text-align: left;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  transition: all 0.2s;
-  font-weight: 500;
-
-  &:hover {
-    background: #fee2e2;
-  }
-}
-
-.authQuickBottom {
-  display: flex;
-  gap: 0.8rem;
-  align-items: center;
-}
-
-.loginLink,
-.registerLink {
-  color: white;
-  text-decoration: none;
-  padding: 0.5rem 0.8rem;
-  border-radius: 4px;
-  font-weight: 500;
-  font-size: 0.85rem;
-  transition: all 0.3s;
-}
-
-.loginLink {
-  background: rgba(255, 255, 255, 0.2);
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.3);
-  }
-}
-
-.registerLink {
-  background: white;
-  color: #22c55e;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.9);
-  }
-}
-

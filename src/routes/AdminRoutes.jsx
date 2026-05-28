@@ -1,6 +1,8 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import AdminPage from '../pages/AdminPage';
+import AdminProductsPage from '../pages/AdminProductsPage';
+import AdminOrdersPage from '../pages/AdminOrdersPage';
 
 export default function AdminRoutes() {
   const { isAuthenticated, loading, userRole } = useAuth();
@@ -12,6 +14,9 @@ export default function AdminRoutes() {
   return (
     <Routes>
       <Route index element={<AdminPage />} />
+      <Route path="dashboard" element={<AdminPage />} />
+      <Route path="productos" element={<AdminProductsPage />} />
+      <Route path="ordenes" element={<AdminOrdersPage />} />
     </Routes>
   );
 }

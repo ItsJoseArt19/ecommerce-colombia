@@ -5,15 +5,13 @@ export default function Filters({ filters, setFilters }) {
   const updateFilters = (nextFilters) => setFilters({ ...filters, ...nextFilters });
 
   const handleReset = () => {
-    dispatch({
-      type: 'SET_FILTER',
-      payload: {
-        category: null,
-        minPrice: 0,
-        maxPrice: 500000,
-        rating: 0,
-        search: '',
-      },
+    setFilters({
+      category: null,
+      minPrice: 0,
+      maxPrice: 500000,
+      rating: 0,
+      search: '',
+      availability: 'all',
     });
   };
 
@@ -80,6 +78,24 @@ export default function Filters({ filters, setFilters }) {
             type="button"
           >
             {rating}+ estrellas
+          </button>
+        ))}
+      </div>
+
+      <div className={styles.group}>
+        <h4>Disponibilidad</h4>
+        {[
+          { label: 'Todos', value: 'all' },
+          { label: 'Disponibles', value: 'available' },
+          { label: 'Agotados', value: 'out' },
+        ].map((option) => (
+          <button
+            className={filters.availability === option.value ? styles.activeChip : styles.chip}
+            key={option.value}
+            onClick={() => updateFilters({ availability: option.value })}
+            type="button"
+          >
+            {option.label}
           </button>
         ))}
       </div>

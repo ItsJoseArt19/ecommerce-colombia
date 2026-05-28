@@ -11,6 +11,8 @@ const errorMessages = {
   'auth/missing-password': 'Ingresa una contrasena.',
 };
 
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function getAuthErrorMessage(error) {
   return errorMessages[error?.code] || 'No se pudo completar la solicitud. Intenta de nuevo.';
 }
@@ -42,6 +44,16 @@ export default function AuthPage({ mode }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setFormError('');
+
+    if (!emailPattern.test(form.email.trim())) {
+      setFormError('Ingresa un correo valido con @ y dominio.');
+      return;
+    }
+
+    if (isRegister && !form.displayName.trim()) {
+      setFormError('Ingresa tu nombre completo.');
+      return;
+    }
 
     try {
       if (isRegister) {
@@ -92,7 +104,9 @@ export default function AuthPage({ mode }) {
               autoComplete="email"
               name="email"
               onChange={handleChange}
+              pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
               required
+              title="Ingresa un correo valido, por ejemplo usuario@correo.com"
               type="email"
               value={form.email}
             />

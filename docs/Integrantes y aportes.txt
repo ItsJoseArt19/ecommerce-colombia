@@ -1,0 +1,20 @@
+Integrantes 
+Gabriel Armando Gil 
+Jose David Aguirre 
+Jose Miguel Galeano
+
+Aportes 
+aunque en el github no se ven que los tres integrantes 
+hayan hecho comits de manera individual en diferentes
+ramas como se pidio en el documento, los integrantes 
+trabajaron de manera efectiva y por situaciones con git hicimos
+movimientos de archivos y cargamos todo desde un mismo punto debido
+a problemas que tuvimos, no supimos si por algunos archivos o que 
+pudo suceder, pero logramos cargar todo sin inconvenientes desde un 
+mismo punto y el proyecto funciono correctamente.
+
+ Jose Miguel Galeano y Gabriel Armando Gil trabajaron en el apartado del frontend y configuracion
+ Jose David Aguirre hizo el figma y organizo el entorno del firebase para nuestra base de datos 
+
+ Todo el equipo contribuyo para la organizacion del archivo dist el cual se subio a netlify
+  para poner a correr la web en ese sitio y funciono correctamente

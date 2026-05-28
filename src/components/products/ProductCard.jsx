@@ -1,4 +1,5 @@
 import { useCart } from '../../hooks/useCart';
+import { Link } from 'react-router-dom';
 import styles from './ProductCard.module.scss';
 
 const formatCurrency = (value) =>
@@ -35,7 +36,9 @@ export default function ProductCard({ product, onAdded }) {
           <span>{product.category}</span>
           <small>{product.location}</small>
         </div>
-        <h3>{product.name}</h3>
+        <h3>
+          <Link to={`/producto/${product.id}`}>{product.name}</Link>
+        </h3>
         <p>{product.description}</p>
 
         <div className={styles.rating}>

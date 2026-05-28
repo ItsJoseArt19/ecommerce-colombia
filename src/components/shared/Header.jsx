@@ -1,32 +1,15 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../hooks/useCart';
 import { useAuth } from '../../hooks/useAuth';
-import { useProducts } from '../../hooks/useProducts';
-import { logoutUser } from '../../services/authService';
 import styles from './Header.module.scss';
 
 export default function Header() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const { itemCount } = useCart();
-  const { isAuthenticated, logout, user } = useAuth();
   const navigate = useNavigate();
   const { itemCount } = useCart();
-  const { isAuthenticated, user, dispatch } = useAuth();
-  const { filters, dispatch: dispatchProducts } = useProducts();
-
-  // Cerrar menú cuando se hace click fuera
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
-        setShowUserMenu(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const { isAuthenticated, user, logout } = useAuth();
 
   const handleSearch = (event) => {
     event.preventDefault();

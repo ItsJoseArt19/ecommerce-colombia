@@ -1,6 +1,9 @@
 import Graph from '../helpers/Graph';
 
 const citiesGraph = new Graph(false);
+const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
+const OSRM_URL = 'https://router.project-osrm.org/route/v1/driving';
+const DEFAULT_BOGOTA_COORDINATES = [4.711, -74.0721];
 
 export const DELIVERY_POINTS = [
   {
@@ -124,3 +127,59 @@ export const getRouteBetweenCities = (fromCity) => {
   const graph = initializeCitiesGraph();
   return graph.bfs(fromCity);
 };
+
+export const geocodeAddress = async (address) => {
+  const params = new URLSearchParams({
+    format: 'json',
+    limit: '1',
+    q: `${address}, Colombia`,
+  });
+
+  const response = await fetch(`${NOMINATIM_URL}?${params.toString()}`, {
+    headers: {
+      Accept: 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('No se pudo obtener la ubicacion de la direccion.');
+  }
+
+  const results = await response.json();
+  if (!results.length) {
+    throw new Error('No se encontraron coordenadas para la direccion.');
+  }
+
+  return [Number(results[0].lat), Number(results[0].lon)];
+};
+
+export const getRouteCoordinates = async (origin, destination) => {
+  const [originLat, originLng] = origin;
+  const [destinationLat, destinationLng] = destination;
+  const coordinates = `${originLng},${originLat};${destinationLng},${destinationLat}`;
+  const params = new URLSearchParams({
+    overview: 'full',
+    geometries: 'geojson',
+  });
+
+  const response = await fetch(`${OSRM_URL}/${coordinates}?${params.toString()}`);
+
+  if (!response.ok) {
+    throw new Error('No se pudo obtener la ruta del pedido.');
+  }
+
+  const data = await response.json();
+  const route = data.routes?.[0];
+  if (!route?.geometry?.coordinates?.length) {
+    throw new Error('La ruta no tiene coordenadas disponibles.');
+  }
+
+  return route.geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+};
+
+export const getCoordinatesByCity = (city) => {
+  const point = DELIVERY_POINTS.find((item) => item.city === city);
+  return point ? [point.latitude, point.longitude] : DEFAULT_BOGOTA_COORDINATES;
+};
+
+export const getBogotaCoordinates = () => DEFAULT_BOGOTA_COORDINATES;
